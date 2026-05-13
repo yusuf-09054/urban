@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/x-icon" href="./logo.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urban Shield</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+/* ===== INTRO SCREEN ===== */
+#intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Logo */
+.intro-logo {
+  width: 120px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: logoFade 1s ease forwards;
+}
+
+/* Text */
+.intro-text {
+  margin-top: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: textFade 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+/* Animations */
+@keyframes logoFade {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes textFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ===== INTRO BACKGROUND CIRCLES ===== */
+
+/* Common style */
+#intro::before,
+#intro::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0;
+}
+
+/* TOP LEFT GREEN */
+#intro::before {
+  width: 400px;
+  height: 400px;
+  background: #0b9124; /* green */
+
+  top: -150px;
+  left: -150px;
+
+  animation: circleTopLeft 1s ease forwards;
+}
+
+/* BOTTOM RIGHT LIGHT BLUE */
+#intro::after {
+  width: 400px;
+  height: 400px;
+  background: #0d6efd; /* light blue */
+
+  bottom: -150px;
+  right: -150px;
+
+  animation: circleBottomRight 1s ease forwards;
+  animation-delay: 0.3s;
+}
+
+/* Animations */
+@keyframes circleTopLeft {
+  from {
+    transform: scale(0.5) translate(-50px, -50px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes circleBottomRight {
+  from {
+    transform: scale(0.5) translate(50px, 50px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+}
+.intro-logo,
+.intro-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== MAIN CONTENT (HIDDEN FIRST) ===== */
+#main-content {
+  opacity: 0;
+  transition: 0.8s ease;
+}
+
+#main-content.show {
+  opacity: 1;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: relative;
+  background-color: #cfd5d57a;
+  padding: 5px 0;
+  min-height: 60px;
+  transition: all 0.3s ease;
+  overflow: visible;
+}
+/* ===== BLUE CORNER GRADIENT (FIXED) ===== */
+.navbar::before,
+.navbar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 1;   /* lower than content */
+  pointer-events: none; /* prevent blocking clicks */
+}
+
+.navbar::before {
+  left: 0;
+  background: linear-gradient(to right, #5797f6, transparent);
+}
+
+.navbar::after {
+  right: 0;
+  background: linear-gradient(to left, #38cb62, transparent);
+}
+
+/* Make sure content stays ABOVE */
+.navbar .container {
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 768px) {
+  .navbar::before,
+  .navbar::after {
+    width: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar::before,
+  .navbar::after {
+    width: 20px;
+  }
+}
+/* Hover dropdown (desktop only) */
+@media (min-width: 992px) {
+  .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+}
+
+.navbar.scrolled {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.navbar-nav {
+  margin: 0 auto;
+  gap: 20px;
+}
+/* Navbar links */
+.nav-link {
+  color: #000 !important;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Hover: zoom + color */
+.nav-link:hover {
+  color: #0d6efd !important;
+  transform: scale(1.08);
+}
+
+/* Underline animation */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: #0dfd15;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+/* Expand underline on hover */
+.nav-link:hover::after {
+  width: 100%;
+}
+.nav-link.active {
+  color: #0d6efd !important;
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+/* Apply modern font */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== HERO WITH SLOW ZOOM ===== */
+.hero {
+  height: 90vh;
+  position: relative;
+  overflow: hidden; /* important */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+/* BACKGROUND IMAGE LAYER */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: url('./homehero.jpg') center/cover no-repeat;
+
+  transform: scale(1); 
+  animation: slowZoom 8s ease forwards;
+  z-index: 0;
+}
+
+/* DARK OVERLAY */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1;
+}
+
+/* TEXT ABOVE */
+.hero > div {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+}
+@keyframes slowZoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.3);
+  }
+}
+/* TITLE STYLE */
+.about-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #0d6efd;
+  position: relative;
+  display: inline-block;
+
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+/* GREEN "Us" */
+.about-title span {
+  color: #28a745;
+}
+
+/* SHINE EFFECT */
+.about-title::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.8),
+    transparent
+  );
+}
+
+/* Trigger shine */
+.about-title.animate::after {
+  animation: shine 1.5s ease;
+}
+
+/* TEXT PARAGRAPH */
+.about-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+/* ACTIVE STATE */
+.about-title.show,
+.about-text.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* SHINE KEYFRAME */
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 120%; }
+}
+/* IMAGE STYLE */
+.about-img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
+  opacity: 0;
+  transform: translateX(60px);
+  transition: 0.8s ease;
+}
+
+.about-img.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* SECTION TITLE */
+.section-title {
+  font-weight: 600;
+}
+/* ===== OUR SERVICE TITLE ===== */
+.service-title {
+  font-size: 50px;
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+/* COLORS */
+.service-title .blue {
+  color: #0d6efd;
+}
+
+.service-title .green {
+  color: #28a745;
+}
+
+/* SHINE EFFECT */
+.service-title::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.9),
+    transparent
+  );
+}
+
+/* Trigger shine */
+.service-title.animate::after {
+  animation: shine 1.5s ease;
+}
+
+/* SCROLL SHOW */
+.service-title.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* SHINE KEYFRAME */
+@keyframes shine {
+  0% { left: -120%; }
+  100% { left: 120%; }
+}
+
+/* SERVICES */
+.service-box {
+  padding: 25px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  transition: 0.3s;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.6s ease;
+}
+.service-box.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.service-box i {
+  font-size: 30px;
+  color: #0d6efd;
+}
+
+.service-box:hover {
+  transform: translateY(-8px);
+}
+/* ===== PREMIUM SERVICE CARD ===== */
+.service-card {
+  padding: 30px 25px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  text-align: center;
+
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient glow border */
+.service-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  padding: 2px;
+  background: linear-gradient(120deg, #0d6efd, #28a745);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Hover effect */
+.service-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Icon circle */
+.icon-box {
+  width: 70px;
+  height: 70px;
+  margin: auto;
+  margin-bottom: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d6efd, #28a745);
+  color: #fff;
+  font-size: 28px;
+
+  transition: 0.4s ease;
+}
+
+/* Icon animation */
+.service-card:hover .icon-box {
+  transform: rotate(10deg) scale(1.1);
+}
+
+/* Title */
+.service-card h5 {
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Text */
+.service-card p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Scroll animation */
+.service-card {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.service-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== PREMIUM STATS ===== */
+.stats {
+  background: #f8f9fa;
+}
+
+/* Card */
+.stat-card {
+  padding: 30px 20px;
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: 0.4s ease;
+
+  text-align: center;
+}
+
+/* Hover */
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Icon */
+.stat-card i {
+  font-size: 30px;
+  color: #0d6efd;
+  margin-bottom: 10px;
+}
+
+/* Number */
+.stat-card h3 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+/* Text */
+.stat-card p {
+  margin-top: 5px;
+  color: #555;
+}
+
+/* Scroll animation */
+.stat-card {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.stat-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ===== PREMIUM CTA ===== */
+.cta {
+  background: linear-gradient(135deg, #0d6efd, #28a745);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+/* Soft glow background effect */
+.cta::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  top: -100px;
+  left: -100px;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  bottom: -100px;
+  right: -100px;
+}
+
+/* Title */
+.cta-title {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+/* Subtitle */
+.cta-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* Button */
+.cta-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 30px;
+
+  background: #fff;
+  color: #0d6efd;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.cta-btn:hover {
+  background: #000;
+  color: #fff;
+  transform: scale(1.08);
+}
+.cta.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ===== PREMIUM FOOTER ===== */
+.footer {
+  background: linear-gradient(135deg, #0d6efd, #28a745);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* EXISTING 2 CIRCLES */
+.footer::before,
+.footer::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.footer::before {
+  top: -100px;
+  left: -100px;
+}
+
+.footer::after {
+  bottom: -100px;
+  right: -100px;
+}
+.footer-links a {
+  color: #fff !important;   /* force white */
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #000 !important;   /* hover effect */
+  padding-left: 5px;
+}
+
+/* NEW EXTRA CIRCLES */
+.circle {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+/* TOP RIGHT */
+.circle.c1 {
+  top: -80px;
+  right: -80px;
+}
+
+/* BOTTOM LEFT */
+.circle.c2 {
+  bottom: -80px;
+  left: -80px;
+}
+
+/* Make content above circles */
+.footer .container {
+  position: relative;
+  z-index: 2;
+}
+.circle {
+  animation: float 6s infinite ease-in-out;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(15px); }
+  100% { transform: translateY(0); }
+}
+/* CTA */
+.cta {
+  background: var(--main-gradient);
+  color: #fff;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--main-gradient);
+  color: #fff;
+}
+.footer-divider {
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1));
+}
+.footer {
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+}
+.cta .btn {
+  background: #fff;
+  color: #0d6efd;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.cta .btn:hover {
+  transform: scale(1.05);
+}
+:root {
+  --main-gradient: linear-gradient(135deg, #0d6efd, #28a745);
+}
+.footer-social a {
+  display: inline-block;
+  margin-right: 12px;
+  font-size: 20px;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  transition: 0.3s ease;
+}
+
+/* Hover effects */
+.footer-social a:hover {
+  transform: translateY(-5px) scale(1.1);
+}
+
+/* Brand colors on hover */
+.footer-social a:nth-child(1):hover {
+  background: #25D366; /* WhatsApp */
+}
+
+.footer-social a:nth-child(2):hover {
+  background: #E4405F; /* Instagram */
+}
+
+.footer-social a:nth-child(3):hover {
+  background: #0d6efd; /* Website */
+}
+.footer-social a:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+/* CONTACT STRIP */
+.contact-strip {
+  background: #f8f9fa;
+}
+
+/* Title */
+.contact-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+/* Subtitle */
+.contact-subtitle {
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Form styling */
+.contact-form input {
+  border-radius: 30px;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+.contact-form input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 10px rgba(13,110,253,0.2);
+}
+
+/* Button */
+.contact-form .btn {
+  border-radius: 30px;
+  padding: 12px;
+  font-weight: 500;
+}
+.contact-form .btn-success {
+  background: #25D366;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.contact-form .btn-success:hover {
+  background: #1ebe5d;
+  transform: scale(1.05);
+}
+/* WHATSAPP FLOAT BUTTON */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+
+  background: #25D366;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 26px;
+  text-decoration: none;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  z-index: 999;
+
+  transition: all 0.3s ease;
+}
+
+/* HOVER */
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  background: #1ebe5d;
+}
+.whatsapp-float::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #25D366;
+  opacity: 0.6;
+  animation: pulse 1.5s infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* OVERLAY */
+.success-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s ease;
+
+  z-index: 9999;
+}
+
+/* ACTIVE */
+.success-popup.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* BOX */
+.popup-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+
+  animation: popUp 0.4s ease;
+}
+
+/* ICON */
+.popup-box i {
+  font-size: 50px;
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+/* ANIMATION */
+@keyframes popUp {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.footer-credit {
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #fbfbfb;
+  font-family: 'Poppins', sans-serif;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== INTRO SCREEN ===== -->
+<div id="intro">
+    <img src="./logo.png" class="intro-logo">
+    <h1 class="intro-text">Urban Service Pvt Ltd</h1>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div id="main-content">
+
+<nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+  <div class="container">
+
+    <a class="navbar-brand" href="./index.html">
+      <img src="./logo.png" height="60" >
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav text-center">
+
+        <li class="nav-item">
+          <a class="nav-link" href="./index.html">Home</a>
+        </li>
+
+       <li class="nav-item dropdown">
+  <a class="nav-link" href="./about.html">
+    About Us
+  </a>
+</li>
+
+<li class="nav-item dropdown">
+  <a class="nav-link" href="./service.html">
+    Services
+  </a>
+</li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="./contact.html">Contact</a>
+        </li>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero text-center d-flex align-items-center justify-content-center">
+  <div>
+    <h1 class="hero-title">Urban Shield Pvt Ltd</h1>
+    <p class="hero-subtitle">We Protect. We Build. We Deliver Excellence.</p>
+    <a href="./contact.html" class="btn btn-primary mt-3">Get Started</a>
+  </div>
+</section>
+
+<section class="about-home container py-5">
+
+  <div class="row align-items-center">
+
+    <!-- LEFT: TITLE + TEXT -->
+    <div class="col-lg-7">
+      
+      <h2 class="about-title">
+        About <span>Us</span>
+      </h2>
+
+      <p class="about-text mt-3">
+        Urban Shield Pvt Ltd is a reliable and professional workforce solutions company specializing in providing trained and disciplined manpower for cleaning and facility maintenance services. We work closely with businesses, industries, offices, and commercial establishments to ensure clean, safe, and well-maintained environments through our skilled workforce.
+      </p>
+
+      <p class="about-text">
+        Our team is carefully selected and trained to deliver high standards of hygiene, efficiency, and responsibility. We understand that every organization has unique needs, so we offer flexible workforce solutions tailored to meet specific client requirements.
+      </p>
+
+      <p class="about-text">
+        At Urban Shield, our focus is not just on providing manpower, but on building long-term relationships with our clients by maintaining quality, trust, and professionalism.
+      </p>
+
+    </div>
+
+    <!-- RIGHT: IMAGE -->
+    <div class="col-lg-5 text-center">
+      <img src="./homeabtimg.jpg" class="about-img" alt="about image">
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services py-5">
+  <div class="container text-center">
+    <h2 class="service-title">
+  <span class="blue">Our</span> <span class="green">Service</span>
+</h2>
+
+    <div class="row mt-4">
+
+     <div class="row mt-5">
+
+  <div class="col-md-4">
+    <div class="service-card">
+      <div class="icon-box">
+        <i class="bi bi-person-workspace"></i>
+      </div>
+      <h5>Workforce Supply</h5>
+      <p>Providing trained and reliable cleaning staff for offices, industries, and companies.</p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="service-card">
+      <div class="icon-box">
+        <i class="bi bi-shield-check"></i>
+      </div>
+      <h5>Quality Cleaning</h5>
+      <p>Maintaining hygiene and safety with professional cleaning standards.</p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="service-card">
+      <div class="icon-box">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <h5>Flexible Services</h5>
+      <p>Custom workforce solutions tailored to your company’s needs.</p>
+    </div>
+  </div>
+
+</div>
+
+    </div>
+  </div>
+</section>
+
+<section class="stats py-5">
+  <div class="container text-center">
+
+    <div class="row g-4">
+
+      <div class="col-md-3">
+        <div class="stat-card">
+          <i class="bi bi-people-fill"></i>
+          <h3 class="counter" data-target="300">0</h3>
+          <p>Workers Deployed</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card">
+          <i class="bi bi-buildings"></i>
+          <h3 class="counter" data-target="120">0</h3>
+          <p>Client Companies</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card">
+          <i class="bi bi-award-fill"></i>
+          <h3 class="counter" data-target="3">0</h3>
+          <p>Years Experience</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card">
+          <i class="bi bi-clock-fill"></i>
+          <h3>24/7</h3>
+          <p>Service Availability</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<<section class="contact-strip py-5 text-center">
+  <div class="container">
+<h2 class="service-title">
+  <span class="blue">Get</span> <span class="green">In Touch</span>
+</h2>
+    <p class="contact-subtitle">
+      Send us your requirements instantly via WhatsApp.
+    </p>
+
+    <form id="whatsappForm" class="contact-form mt-4">
+      <div class="row justify-content-center">
+
+        <div class="col-md-3 mb-3">
+          <input type="text" id="name" class="form-control" placeholder="Your Name" required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <input type="email" id="email" class="form-control" placeholder="Your Email" required>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <input type="text" id="message" class="form-control" placeholder="Your Message" required>
+        </div>
+
+        <div class="col-md-2 mb-3">
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-whatsapp"></i> Send
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+</section>
+<div class="footer-divider"></div>
+<footer class="footer pt-5 pb-3">
+   <!-- EXTRA CIRCLES -->
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="container">
+
+    <div class="row text-white">
+
+      <!-- Company -->
+      <div class="col-md-4 mb-4">
+        <h4>Urban Shield Pvt Ltd</h4>
+        <p>
+          We provide reliable and trained workforce solutions for cleaning and 
+          facility management, ensuring hygiene, safety, and professionalism.
+        </p>
+        <div class="footer-social mt-3">
+  <a href="https://wa.me/918608901555" target="_blank">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
+  <a href="https://instagram.com/yourusername" target="_blank">
+    <i class="bi bi-instagram"></i>
+  </a>
+
+  <a href="https://yourwebsite.com" target="_blank">
+    <i class="bi bi-globe"></i>
+  </a>
+</div>
+      </div>
+      
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./service.html">Services</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="col-md-4 mb-4">
+        <h5>Contact Us</h5>
+        <p><i class="bi bi-geo-alt-fill"></i> Chennai, India</p>
+        <p><i class="bi bi-telephone-fill"></i> +91 8608901555</p>
+        <p><i class="bi bi-envelope-fill"></i> yusufmca9@gmail.com</p>
+      </div>
+
+    </div>
+
+    <!-- Bottom -->
+    <div class="text-center footer-bottom mt-4">
+      <p>© 2026 Urban Shield Pvt Ltd. All Rights Reserved.</p>
+    </div>
+<div class="footer-bottom text-center mt-3">
+  <p class="mb-0 small text-light">
+    Designed by <span class="footer-credit">MY</span>
+  </p>
+</div>
+  </div>
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+// STEP FLOW
+window.addEventListener("load", () => {
+
+  // 1. Show intro for 2 sec
+  setTimeout(() => {
+
+    // fade out intro
+    const intro = document.getElementById("intro");
+    intro.style.opacity = "0";
+    intro.style.transition = "0.5s";
+
+    setTimeout(() => {
+      intro.style.display = "none";
+
+      // 2. Show page
+      document.getElementById("main-content").classList.add("show");
+
+      // 3. Show image after page
+      setTimeout(() => {
+        document.getElementById("heroImage").classList.add("show");
+      }, 400);
+
+    }, 500);
+
+  }, 2000);
+
+});
+
+//mobile dropdown
+if (window.innerWidth < 992) {
+  document.querySelectorAll('.dropdown-toggle').forEach(el => {
+    el.setAttribute('data-bs-toggle', 'dropdown');
+  });
+}
+
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+
+      entry.target.classList.add("show");
+
+      // Shine for titles
+      if (
+        entry.target.classList.contains("about-title") ||
+        entry.target.classList.contains("service-title")
+      ) {
+        entry.target.classList.add("animate");
+      }
+
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll(
+  ".about-title, .about-text, .about-img, .service-title, .service-box,.service-card,.stat-card,.cta"
+).forEach(el => {
+  observer.observe(el);
+});
+
+
+const counters = document.querySelectorAll(".counter");
+
+const counterObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+
+      const counter = entry.target;
+      const target = +counter.getAttribute("data-target");
+      let current = 0;
+
+      const increment = target / 120;
+
+      const updateCounter = () => {
+        current += increment;
+
+        if (current < target) {
+          counter.innerText = Math.ceil(current);
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.innerText = target + "+";
+        }
+      };
+
+      updateCounter();
+
+      observer.unobserve(counter); // run only once
+    }
+  });
+}, { threshold: 0.5 });
+
+counters.forEach(counter => {
+  counterObserver.observe(counter);
+});
+
+
+document.getElementById("whatsappForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let name = document.getElementById("name").value.trim();
+  let email = document.getElementById("email").value.trim();
+  let message = document.getElementById("message").value.trim();
+
+  let phone = "918608901555";
+
+  let text = `Hello Urban Shield,
+
+Name: ${name}
+Email: ${email}
+Message: ${message}`;
+
+  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text);
+
+  // ✅ SHOW POPUP FIRST
+  const popup = document.getElementById("successPopup");
+  popup.classList.add("show");
+
+  // ✅ CLEAR FORM
+  this.reset();
+
+  // ✅ OPEN WHATSAPP AFTER DELAY
+  setTimeout(() => {
+    window.open(url, "_blank");
+    popup.classList.remove("show");
+  }, 2000);
+});
+
+
+
+</script>
+<a href="https://wa.me/91XXXXXXXXXX" class="whatsapp-float" target="_blank">
+  <i class="bi bi-whatsapp"></i>
+</a>
+<div id="successPopup" class="success-popup">
+  <div class="popup-box">
+    <i class="bi bi-check-circle-fill"></i>
+    <h4>Message Sent!</h4>
+    <p>We will contact you shortly.</p>
+  </div>
+</div>
+</body>
+</html>
